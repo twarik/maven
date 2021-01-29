@@ -18,9 +18,9 @@ spec:
   # type: ClusterIP
   type: LoadBalancer
   status:
-  loadBalancer:
-    ingress:
-    - ip: 192.0.2.127
+    loadBalancer:
+      ingress:
+      - ip: 192.0.2.127
 ---
 apiVersion: apps/v1
 kind: Deployment
