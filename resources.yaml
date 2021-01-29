@@ -15,7 +15,8 @@ spec:
     targetPort: 8500
   selector:
     app: half-plus-two
-  type: ClusterIP
+  # type: ClusterIP
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
