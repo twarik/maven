@@ -17,10 +17,10 @@ spec:
     app: half-plus-two
   # type: ClusterIP
   type: LoadBalancer
-  # status:
-  # loadBalancer:
-  #   ingress:
-  #   - ip: 192.0.2.127
+  status:
+  loadBalancer:
+    ingress:
+    - ip: 192.0.2.127
 ---
 apiVersion: apps/v1
 kind: Deployment
