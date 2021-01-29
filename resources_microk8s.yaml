@@ -16,7 +16,7 @@ spec:
   selector:
     app: half-plus-two
   # type: ClusterIP
-  clusterIP: 10.152.183.80
+  # clusterIP: 10.152.183.80
   type: LoadBalancer
 status:
   loadBalancer:
