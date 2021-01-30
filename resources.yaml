@@ -16,7 +16,7 @@ spec:
   selector:
     app: customer-churn
   # type: ClusterIP
-  clusterIP: 10.96.0.92
+  clusterIP: 10.96.0.192
   type: LoadBalancer
 status:
   loadBalancer:
