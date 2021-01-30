@@ -15,8 +15,6 @@ spec:
     targetPort: 8500
   selector:
     app: customer-churn
-  # type: ClusterIP
-  clusterIP: 10.96.0.192
   type: LoadBalancer
 status:
   loadBalancer:
@@ -47,7 +45,6 @@ spec:
         - --port=9000
         - --rest_api_port=8500
         - --model_name=customer-churn
-        # - --model_base_path=/root/serving/tensorflow_serving/servables/tensorflow/testdata/saved_model_half_plus_two_cpu
         - --model_base_path=/root/maven/saved_model_customer_churn
         command:
         - /usr/bin/tensorflow_model_server
@@ -76,17 +73,7 @@ spec:
       - configMap:
           name: customer-churn-v1-config
         name: config-volume
-      # -----
-      #   volumeMounts:
-      #   - name: config-volume
-      #     mountPath: /etc/config
-      # volumes:
-      #   - name: config-volume
-      #     configMap:
-      #       # Provide the name of the ConfigMap containing the files you want
-      #       # to add to the container
-      #       name: special-config
-      # restartPolicy: Always
+
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
