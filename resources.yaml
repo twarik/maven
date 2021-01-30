@@ -76,16 +76,17 @@ spec:
       # - configMap:
       #     name: customer-churn-v1-config
       #   name: config-volume
-        volumeMounts:
-        - name: config-volume
-          mountPath: /etc/config
-      volumes:
-        - name: config-volume
-          configMap:
-            # Provide the name of the ConfigMap containing the files you want
-            # to add to the container
-            name: special-config
-      restartPolicy: Always
+      # -----
+      #   volumeMounts:
+      #   - name: config-volume
+      #     mountPath: /etc/config
+      # volumes:
+      #   - name: config-volume
+      #     configMap:
+      #       # Provide the name of the ConfigMap containing the files you want
+      #       # to add to the container
+      #       name: special-config
+      # restartPolicy: Always
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
