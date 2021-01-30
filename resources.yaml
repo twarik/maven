@@ -1,4 +1,19 @@
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: config-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/config/"
+---
+apiVersion: v1
 kind: Service
 metadata:
   labels:
@@ -73,7 +88,6 @@ spec:
       - configMap:
           name: customer-churn-v1-config
         name: config-volume
-
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
