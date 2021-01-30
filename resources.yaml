@@ -85,7 +85,7 @@ spec:
             # Provide the name of the ConfigMap containing the files you want
             # to add to the container
             name: special-config
-      restartPolicy: Never
+      restartPolicy: Always
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
