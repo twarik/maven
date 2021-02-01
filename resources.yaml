@@ -16,10 +16,6 @@ spec:
   selector:
     app: customer-churn
   type: LoadBalancer
-# status:
-#   loadBalancer:
-#     ingress:
-#     - ip: 192.0.2.127
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -66,13 +62,6 @@ spec:
           requests:
             cpu: "1"
             memory: 1Gi
-      #   volumeMounts:
-      #   - mountPath: /var/config/
-      #     name: config-volume
-      # volumes:
-      # - configMap:
-      #     name: customer-churn-v1-config
-      #   name: config-volume
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
