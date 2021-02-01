@@ -15,7 +15,7 @@ spec:
         sidecar.istio.io/inject: "true"
       labels:
         app: customer-churn
-        version: v1
+        version: v2 #Deploy another version of the model, v2.
     spec:
       containers:
       - args:
