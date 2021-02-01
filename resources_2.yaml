@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: customer-churn
-  name: customer-churn-v1
+  name: customer-churn-v2
   namespace: kubeflow
 spec:
   selector:
@@ -15,7 +15,7 @@ spec:
         sidecar.istio.io/inject: "true"
       labels:
         app: customer-churn
-        version: v2 #Deploy another version of the model, v2.
+        version: v2 #Deploy another version of the model, v2.#New deployment has updated version label version=v2
     spec:
       containers:
       - args:
@@ -25,7 +25,7 @@ spec:
         - --model_base_path=/root/maven/saved_model_customer_churn
         command:
         - /usr/bin/tensorflow_model_server
-        image: tensorflow/serving:1.11.1
+        image: masroorhasan/tensorflow-serving:cpu #Updated Docker image masroorhasan/tensorflow-serving:cpu is a pre-built CPU optimized binary.
         imagePullPolicy: IfNotPresent
         livenessProbe:
           initialDelaySeconds: 30
