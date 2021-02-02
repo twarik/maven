@@ -22,7 +22,7 @@ spec:
         - --port=9000
         - --rest_api_port=8500
         - --model_name=customer-churn
-        - --model_base_path=/root/maven/saved_model_customer_churn
+        - --model_base_path=/root/saved_model_customer_churn
         command:
         - /usr/bin/tensorflow_model_server
         image: masroorhasan/tensorflow-serving:cpu #Updated Docker image masroorhasan/tensorflow-serving:cpu is a pre-built CPU optimized binary.
