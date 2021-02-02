@@ -1,0 +1,129 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: customer-churn
+  name: customer-churn-service
+  namespace: kubeflow
+spec:
+  ports:
+  - name: grpc-tf-serving
+    port: 9000
+    targetPort: 9000
+  - name: http-tf-serving
+    port: 8500
+    targetPort: 8500
+  selector:
+    app: customer-churn
+  # type: ClusterIP
+  clusterIP: 10.96.0.192
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 192.0.2.127
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: customer-churn
+  name: customer-churn-v1
+  namespace: kubeflow
+spec:
+  selector:
+    matchLabels:
+      app: customer-churn
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: customer-churn
+        version: v1
+    spec:
+      containers:
+      - args:
+        - --port=9000
+        - --rest_api_port=8500
+        - --model_name=customer-churn
+        # - --model_base_path=/root/serving/tensorflow_serving/servables/tensorflow/testdata/saved_model_half_plus_two_cpu
+        - --model_base_path=/root/saved_model_customer_churn
+        command:
+        - /usr/bin/tensorflow_model_server
+        image: tensorflow/serving:1.11.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          tcpSocket:
+            port: 9000
+        name: customer-churn
+        ports:
+        - containerPort: 9000
+        - containerPort: 8500
+        resources:
+          limits:
+            cpu: "4"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        volumeMounts:
+        - mountPath: /var/config/
+          name: config-volume
+      volumes:
+      - configMap:
+          name: customer-churn-v1-config
+        name: config-volume
+      # -----
+      #   volumeMounts:
+      #   - name: config-volume
+      #     mountPath: /etc/config
+      # volumes:
+      #   - name: config-volume
+      #     configMap:
+      #       # Provide the name of the ConfigMap containing the files you want
+      #       # to add to the container
+      #       name: special-config
+      # restartPolicy: Always
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  labels:
+  name: customer-churn-service
+  namespace: kubeflow
+spec:
+  host: customer-churn-service
+  subsets:
+  - labels:
+      version: v1
+    name: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  labels:
+  name: customer-churn-service
+  namespace: kubeflow
+spec:
+  gateways:
+  - kubeflow-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - method:
+        exact: POST
+      uri:
+        prefix: /tfserving/models/customer-churn
+    rewrite:
+      uri: /v1/models/customer-churn:predict
+    route:
+    - destination:
+        host: customer-churn-service
+        port:
+          number: 8500
+        subset: v1
+      weight: 100
