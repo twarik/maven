@@ -62,6 +62,14 @@ spec:
           requests:
             cpu: "1"
             memory: 1Gi
+            #Added
+        volumeMounts:
+        - mountPath: /var/config/
+          name: config-volume
+      volumes:
+      - configMap:
+          name: customer-churn-v1-config
+        name: config-volume
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
