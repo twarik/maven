@@ -15,7 +15,9 @@ spec:
     targetPort: 8500
   selector:
     app: customer-churn
-  type: LoadBalancer
+  # type: LoadBalancer
+  externalIPs:
+    - 80.11.12.10
 ---
 apiVersion: apps/v1
 kind: Deployment
