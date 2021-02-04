@@ -72,32 +72,33 @@ spec:
       # - configMap:
       #     name: customer-churn-v1-config
       #   name: config-volume
-        volumeMounts:
-        - mountPath: /serving/models/config
-          name: tf-serving-models-config
-      volumes:
-      - name: tf-serving-models-config
-        configMap:
-          name: tf-serving-models-config
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: tf-serving-models-config
-data:
-  models.conf: |+
-    model_config_list: {
-      config: {
-        name: "customerchurn",
-        base_path: "/tmp/saved_model_customer_churn",
-        model_platform: "tensorflow",
-        model_version_policy: {
-          specific: {
-            versions: 1
-          }
-        }
-      }
-    }
+
+#         volumeMounts:
+#         - mountPath: /serving/models/config
+#           name: tf-serving-models-config
+#       volumes:
+#       - name: tf-serving-models-config
+#         configMap:
+#           name: tf-serving-models-config
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: tf-serving-models-config
+# data:
+#   models.conf: |+
+#     model_config_list: {
+#       config: {
+#         name: "customerchurn",
+#         base_path: "/tmp/saved_model_customer_churn",
+#         model_platform: "tensorflow",
+#         model_version_policy: {
+#           specific: {
+#             versions: 1
+#           }
+#         }
+#       }
+#     }
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
