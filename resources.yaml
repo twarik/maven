@@ -91,7 +91,8 @@ metadata:
   namespace: kubeflow
 spec:
   gateways:
-  - kubeflow-gateway
+  # - kubeflow-gateway
+  - customer-churn-serving-gateway
   hosts:
   - '*'
   http:
