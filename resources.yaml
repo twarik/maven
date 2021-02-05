@@ -67,8 +67,28 @@ spec:
           name: config-volume
       volumes:
       - configMap:
-          name: customerchurn-v1-config
+          # name: customerchurn-v1-config
+          name: config-volume
         name: config-volume
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-volume
+data:
+  models.conf: |+
+    model_config_list: {
+      config: {
+        name: "resnet",
+        base_path: "/tmp/savedmodel",
+        model_platform: "tensorflow",
+        model_version_policy: {
+          specific: {
+            versions: 1
+          }
+        }
+      }
+    }
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
