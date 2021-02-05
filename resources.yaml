@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: customer-churn
-  name: customer-churn-service
+    app: customerchurn
+  name: customerchurn-service
   namespace: kubeflow
 spec:
   ports:
@@ -14,34 +14,34 @@ spec:
     port: 8500
     targetPort: 8500
   selector:
-    app: customer-churn
-  type: LoadBalancer
+    app: customerchurn
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: customer-churn
-  name: customer-churn-v1
+    app: customerchurn
+  name: customerchurn-v1
   namespace: kubeflow
 spec:
   selector:
     matchLabels:
-      app: customer-churn
+      app: customerchurn
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
-        app: customer-churn
+        app: customerchurn
         version: v1
     spec:
       containers:
       - args:
         - --port=9000
         - --rest_api_port=8500
-        - --model_name=customer-churn
-        - --model_base_path=/tmp/saved_model_customer_churn
+        - --model_name=customerchurn
+        - --model_base_path=/tmp/savedmodel
         command:
         - /usr/bin/tensorflow_model_server
         image: tensorflow/serving:1.11.1
@@ -51,7 +51,7 @@ spec:
           periodSeconds: 30
           tcpSocket:
             port: 9000
-        name: customer-churn
+        name: customerchurn
         ports:
         - containerPort: 9000
         - containerPort: 8500
@@ -62,15 +62,22 @@ spec:
           requests:
             cpu: "1"
             memory: 1Gi
+        volumeMounts:
+        - mountPath: /var/config/
+          name: config-volume
+      volumes:
+      - configMap:
+          name: customerchurn-v1-config
+        name: config-volume
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   labels:
-  name: customer-churn-service
+  name: customerchurn-service
   namespace: kubeflow
 spec:
-  host: customer-churn-service
+  host: customerchurn-service
   subsets:
   - labels:
       version: v1
@@ -80,11 +87,11 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   labels:
-  name: customer-churn-service
+  name: customerchurn-service
   namespace: kubeflow
 spec:
   gateways:
-  - customer-churn-serving-gateway
+  - kubeflow-gateway
   hosts:
   - '*'
   http:
@@ -92,12 +99,12 @@ spec:
     - method:
         exact: POST
       uri:
-        prefix: /tfserving/models/customer-churn
+        prefix: /tfserving/models/customerchurn
     rewrite:
-      uri: /v1/models/customer-churn:predict
+      uri: /v1/models/customerchurn:predict
     route:
     - destination:
-        host: customer-churn-service
+        host: customerchurn-service
         port:
           number: 8500
         subset: v1
