@@ -7,13 +7,13 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: customerchurn
+      app: customerchurn-serving
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
-        app: customerchurn
+        app: customerchurn-serving
         version: v1
     spec:
       containers:
@@ -22,13 +22,13 @@ spec:
         command:
         - tensorflow_model_server
         - --port=9000
-        - --rest_api_port=9001
+        - --rest_api_port=8500
         - --model_name=customerchurn
         - --model_config_file=/serving/models/config/models.conf
         ports:
         - containerPort: 9000
           protocol: TCP
-        - containerPort: 9001
+        - containerPort: 8500
           protocol: TCP
         volumeMounts:
         - mountPath: /serving/models/config
@@ -48,9 +48,11 @@ spec:
   ports:
   - name: grpc
     port: 9000
+    targetPort: 9000
     protocol: TCP
   - name: rest
-    port: 9001
+    port: 8500
+    targetPort: 8500
     protocol: TCP
   selector:
     app: customerchurn-serving
