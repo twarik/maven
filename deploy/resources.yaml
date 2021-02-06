@@ -1,21 +1,19 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: customerchurn-serving
   labels:
     app: customerchurn-serving
-    version: v1
+  name: customerchurn-serving
 spec:
-  revisionHistoryLimit: 3
-  progressDeadlineSeconds: 30
-  strategy:
-    rollingUpdate:
-      maxUnavailable: 0
-    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: customerchurn
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
-        app: customerchurn-serving
+        app: customerchurn
         version: v1
     spec:
       containers:
@@ -25,25 +23,6 @@ spec:
         - tensorflow_model_server
         - --port=9000
         - --rest_api_port=9001
-        # - --model_config_file=/serving/models/config/models.conf
-        # - --file_system_poll_wait_seconds=$(FS_POLL_WAIT_SECONDS)
-        # env:
-        # - name: FS_POLL_WAIT_SECONDS
-        #   value: "60"
-        # - name: AWS_ACCESS_KEY_ID
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: s3-storage-creds
-        #       key: access_id
-        # - name: AWS_SECRET_ACCESS_KEY
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: s3-storage-creds
-        #       key: access_key
-        # - name: AWS_REGION
-        #   value: us-east-2
-        # - name: S3_ENDPOINT
-        #   value: s3.us-east-2.amazonaws.com
         ports:
         - containerPort: 9000
           protocol: TCP
@@ -73,6 +52,7 @@ spec:
     protocol: TCP
   selector:
     app: customerchurn-serving
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: ConfigMap
