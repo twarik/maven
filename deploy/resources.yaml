@@ -23,6 +23,7 @@ spec:
         - tensorflow_model_server
         - --port=9000
         - --rest_api_port=9001
+        - --model_config_file=/serving/models/config/models.conf
         ports:
         - containerPort: 9000
           protocol: TCP
