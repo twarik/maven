@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: customerchurn-serving
+  name: customerchurn-serving
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: customerchurn-serving
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: customerchurn-serving
+        version: v1
+    spec:
+      containers:
+      - name: tensorflow-serving
+        # image: tensorflow/serving:latest
+        image: tensorflow/serving:1.11.1
+
+        command:
+        - tensorflow_model_server
+        - --port=9000
+        - --rest_api_port=8500
+        - --model_name=customerchurn
+        - --model_base_path=/tmp/savedmodel/customerchurn/
+        # - --model_config_file=/serving/models/config/models.conf
+        ports:
+        - containerPort: 9000
+          protocol: TCP
+        - containerPort: 8500
+          protocol: TCP
+      #   volumeMounts:
+      #   - mountPath: /serving/models/config
+      #     name: tf-serving-models-config
+      # volumes:
+      # - name: tf-serving-models-config
+      #   configMap:
+      #     name: tf-serving-models-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: customerchurn-serving
+  labels:
+    app: customerchurn-serving
+spec:
+  ports:
+  - name: grpc
+    port: 9000
+    targetPort: 9000
+    protocol: TCP
+  - name: rest
+    port: 8500
+    targetPort: 8500
+    protocol: TCP
+  selector:
+    app: customerchurn-serving
+  type: LoadBalancer
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: tf-serving-models-config
+# data:
+#   models.conf: |+
+#     model_config_list: {
+#       config: {
+#         name: "customerchurn",
+#         base_path: "/tmp/savedmodel/customerchurn",
+#         model_platform: "tensorflow",
+#         model_version_policy: {
+#           specific: {
+#             versions: 1
+#           }
+#         }
+#       }
+#     }
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: customerchurn-serving
+spec:
+  hosts:
+    - "*"
+  gateways:
+  - customerchurn-serving-gateway
+  http:
+  - route:
+    - destination:
+        host: customerchurn-serving.default.svc.cluster.local
+        port:
+          number: 9000
+        subset: v1
+      weight: 100
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: customerchurn-serving
+spec:
+  host: customerchurn-serving.default.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+  # define subset on label selector
+  subsets:
+  - name: v1
+    labels:
+      version: v1
