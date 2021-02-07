@@ -4,8 +4,8 @@ metadata:
   name: aws-s3
 spec:
   hosts:
-  - "*"
-  # - s3.us-east-2.amazonaws.com
+  # - "*"
+  - s3.us-east-1.amazonaws.com
   ports:
   - number: 80
     name: http-port
