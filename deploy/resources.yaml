@@ -19,15 +19,13 @@ spec:
     spec:
       containers:
       - name: tensorflow-serving
-        # image: tensorflow/serving:latest
-        image: tensorflow/serving:1.11.1
+        image: tensorflow/serving:latest
+        # image: tensorflow/serving:1.11.1
 
         command:
         - tensorflow_model_server
         - --port=9000
         - --rest_api_port=8500
-        # - --model_name=customerchurn
-        # - --model_base_path=/tmp/savedmodel/customerchurn/
         - --model_config_file=/serving/models/config/models.conf
         - --file_system_poll_wait_seconds=$(FS_POLL_WAIT_SECONDS)
         env:
