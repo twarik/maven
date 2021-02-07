@@ -18,7 +18,9 @@ spec:
     spec:
       containers:
       - name: tensorflow-serving
-        image: tensorflow/serving:latest
+        # image: tensorflow/serving:latest
+        image: tensorflow/serving:1.11.1
+
         command:
         - tensorflow_model_server
         - --port=9000
