@@ -67,7 +67,7 @@ data:
     model_config_list: {
       config: {
         name: "customerchurn",
-        base_path: "/tmp/savedmodel",
+        base_path: "/tmp/savedmodel/customerchurn",
         model_platform: "tensorflow",
         model_version_policy: {
           specific: {
