@@ -15,14 +15,14 @@ spec:
     targetPort: 8500
   selector:
     app: customerchurn
-  type: LoadBalancer
----
-apiVersion: apps/v1
+  type: ClusterIP
+  # type: LoadBalancer
+---apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: customerchurn
-  name: customerchurn-v1
+    app: s3
+  name: s3
   namespace: kubeflow
 spec:
   selector:
@@ -31,25 +31,21 @@ spec:
   template:
     metadata:
       annotations:
-        sidecar.istio.io/inject: "true"
+        sidecar.istio.io/inject: null
       labels:
-        app: customerchurn
+        app: s3
         version: v1
     spec:
       containers:
       - args:
         - --port=9000
         - --rest_api_port=8500
-        # - --model_name=customerchurn
-        # - --model_base_path=s3://customerchurn-repo/savedmodel
-        # - --monitoring_config_file=/var/config/monitoring_config.txt
-        - --model_config_file=/serving/models/config/models.conf
-        # - --file_system_poll_wait_seconds=$(FS_POLL_WAIT_SECONDS)
+        - --model_name=s3
+        - --model_base_path=s3://customerchurn-repo/savedmodel
+        - --monitoring_config_file=/var/config/monitoring_config.txt
         command:
         - /usr/bin/tensorflow_model_server
         env:
-        # - name: FS_POLL_WAIT_SECONDS
-        #   value: "60"
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -61,13 +57,13 @@ spec:
               key: AWS_SECRET_ACCESS_KEY
               name: secretname
         - name: AWS_REGION
-          value: us-east-1
+          value: us-west-1
         - name: S3_USE_HTTPS
           value: "true"
         - name: S3_VERIFY_SSL
           value: "true"
         - name: S3_ENDPOINT
-          value: s3.us-east-1.amazonaws.com
+          value: s3.us-west-1.amazonaws.com
         image: tensorflow/serving:1.11.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -75,7 +71,7 @@ spec:
           periodSeconds: 30
           tcpSocket:
             port: 9000
-        name: customerchurn
+        name: s3
         ports:
         - containerPort: 9000
         - containerPort: 8500
@@ -86,58 +82,13 @@ spec:
           requests:
             cpu: "1"
             memory: 1Gi
-          volumeMounts: #Added config
-        - mountPath: /serving/models/config
-          name: tf-serving-models-config
+        volumeMounts:
+        - mountPath: /var/config/
+          name: config-volume
       volumes:
-      - name: tf-serving-models-config
-        configMap:
-          name: tf-serving-models-config
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: tf-serving-models-config
-data:
-  models.conf: |+
-    model_config_list: {
-      config: {
-        name: "savedmodel",
-        base_path: "s3://customerchurn-repo/savedmodel",
-        model_platform: "tensorflow",
-        model_version_policy: {
-          specific: {
-            versions: 1
-          }
-        }
-      }
-    }
-#         volumeMounts:
-#         - mountPath: /var/config/
-#           name: config-volume
-#       volumes:
-#       - configMap:
-#           name: config-volume
-#         name: config-volume
-# ---
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: config-volume
-# data:
-#   models.conf: |+
-#     model_config_list: {
-#       config: {
-#         name: "savedmodel",
-#         base_path: "s3://customerchurn-repo/savedmodel",
-#         model_platform: "tensorflow",
-#         model_version_policy: {
-#           specific: {
-#             versions: 1
-#           }
-#         }
-#       }
-#     }
+      - configMap:
+          name: s3-config
+        name: config-volume
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
