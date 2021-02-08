@@ -42,7 +42,7 @@ spec:
         - --rest_api_port=8500
         - --model_name=customerchurn
         - --model_base_path=s3://customerchurn-repo/savedmodel
-        - --monitoring_config_file=/var/config/monitoring_config.txt
+        # - --monitoring_config_file=/var/config/monitoring_config.txt
         command:
         - /usr/bin/tensorflow_model_server
         env:
@@ -82,13 +82,13 @@ spec:
           requests:
             cpu: "1"
             memory: 1Gi
-        volumeMounts:
-        - mountPath: /var/config/
-          name: config-volume
-      volumes:
-      - configMap:
-          name: config-volume #s3-config
-        name: config-volume
+      #   volumeMounts:
+      #   - mountPath: /var/config/
+      #     name: config-volume
+      # volumes:
+      # - configMap:
+      #     name: config-volume #s3-config
+      #   name: config-volume
 # ---
 # apiVersion: v1
 # kind: ConfigMap
