@@ -44,12 +44,12 @@ spec:
         # - --model_base_path=s3://customerchurn-repo/savedmodel
         # - --monitoring_config_file=/var/config/monitoring_config.txt
         - --model_config_file=/serving/models/config/models.conf
-        - --file_system_poll_wait_seconds=$(FS_POLL_WAIT_SECONDS)
+        # - --file_system_poll_wait_seconds=$(FS_POLL_WAIT_SECONDS)
         command:
         - /usr/bin/tensorflow_model_server
         env:
-        - name: FS_POLL_WAIT_SECONDS
-          value: "60"
+        # - name: FS_POLL_WAIT_SECONDS
+        #   value: "60"
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
