@@ -82,13 +82,13 @@ spec:
           requests:
             cpu: "1"
             memory: 1Gi
-#         volumeMounts:
-#         - mountPath: /var/config/
-#           name: config-volume
-#       volumes:
-#       - configMap:
-#           name: config-volume #s3-config
-#         name: config-volume
+        volumeMounts:
+        - mountPath: /var/config/
+          name: config-volume
+      volumes:
+      - configMap:
+          name: config-volume #s3-config
+        name: config-volume
 # ---
 # apiVersion: v1
 # kind: ConfigMap
