@@ -15,8 +15,7 @@ spec:
     targetPort: 8500
   selector:
     app: customerchurn
-  type: ClusterIP
-  # type: LoadBalancer
+  type: ClusterIP # type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
