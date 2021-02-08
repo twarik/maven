@@ -82,32 +82,32 @@ spec:
           requests:
             cpu: "1"
             memory: 1Gi
-        volumeMounts:
-        - mountPath: /var/config/
-          name: config-volume
-      volumes:
-      - configMap:
-          name: config-volume
-        name: config-volume
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: config-volume
-data:
-  models.conf: |+
-    model_config_list: {
-      config: {
-        name: "resnet",
-        base_path: "s3://customerchurn-repo/savedmodel",
-        model_platform: "tensorflow",
-        model_version_policy: {
-          specific: {
-            versions: 1
-          }
-        }
-      }
-    }
+#         volumeMounts:
+#         - mountPath: /var/config/
+#           name: config-volume
+#       volumes:
+#       - configMap:
+#           name: config-volume
+#         name: config-volume
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: config-volume
+# data:
+#   models.conf: |+
+#     model_config_list: {
+#       config: {
+#         name: "resnet",
+#         base_path: "s3://customerchurn-repo/savedmodel",
+#         model_platform: "tensorflow",
+#         model_version_policy: {
+#           specific: {
+#             versions: 1
+#           }
+#         }
+#       }
+#     }
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
