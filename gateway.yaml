@@ -1,7 +1,9 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: customer-churn-serving-gateway
+  # name: customer-churn-serving-gateway
+  name: kubeflow-gateway
+
 spec:
   selector:
     istio: ingressgateway # use istio default controller
