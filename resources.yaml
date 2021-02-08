@@ -87,8 +87,27 @@ spec:
           name: config-volume
       volumes:
       - configMap:
-          name: s3-config
+          name: config-volume #s3-config
         name: config-volume
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-volume
+data:
+  models.conf: |+
+    model_config_list: {
+      config: {
+        name: "savedmodel",
+        base_path: "s3://customerchurn-repo/savedmodel",
+        model_platform: "tensorflow",
+        model_version_policy: {
+          specific: {
+            versions: 1
+          }
+        }
+      }
+    }
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
