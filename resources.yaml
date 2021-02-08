@@ -41,9 +41,29 @@ spec:
         - --port=9000
         - --rest_api_port=8500
         - --model_name=customerchurn
-        - --model_base_path=/tmp/savedmodel
+        - --model_base_path=s3://customerchurn-repo/savedmodel
+        - --monitoring_config_file=/var/config/monitoring_config.txt
         command:
         - /usr/bin/tensorflow_model_server
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: AWS_ACCESS_KEY_ID
+              name: secretname
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: AWS_SECRET_ACCESS_KEY
+              name: secretname
+        - name: AWS_REGION
+          value: us-east-1
+        - name: S3_USE_HTTPS
+          value: "true"
+        - name: S3_VERIFY_SSL
+          value: "true"
+        - name: S3_ENDPOINT
+          value: s3.us-east-1.amazonaws.com
         image: tensorflow/serving:1.11.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -67,7 +87,6 @@ spec:
           name: config-volume
       volumes:
       - configMap:
-          # name: customerchurn-v1-config
           name: config-volume
         name: config-volume
 ---
@@ -80,7 +99,7 @@ data:
     model_config_list: {
       config: {
         name: "resnet",
-        base_path: "/tmp/savedmodel",
+        base_path: "s3://customerchurn-repo/savedmodel",
         model_platform: "tensorflow",
         model_version_policy: {
           specific: {
