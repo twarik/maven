@@ -40,12 +40,16 @@ spec:
       - args:
         - --port=9000
         - --rest_api_port=8500
-        - --model_name=customerchurn
-        - --model_base_path=s3://customerchurn-repo/savedmodel
-        - --monitoring_config_file=/var/config/monitoring_config.txt
+        # - --model_name=customerchurn
+        # - --model_base_path=s3://customerchurn-repo/savedmodel
+        # - --monitoring_config_file=/var/config/monitoring_config.txt
+        - --model_config_file=/serving/models/config/models.conf
+        - --file_system_poll_wait_seconds=$(FS_POLL_WAIT_SECONDS)
         command:
         - /usr/bin/tensorflow_model_server
         env:
+        - name: FS_POLL_WAIT_SECONDS
+          value: "60"
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -82,6 +86,32 @@ spec:
           requests:
             cpu: "1"
             memory: 1Gi
+          volumeMounts: #Added config
+        - mountPath: /serving/models/config
+          name: tf-serving-models-config
+      volumes:
+      - name: tf-serving-models-config
+        configMap:
+          name: tf-serving-models-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tf-serving-models-config
+data:
+  models.conf: |+
+    model_config_list: {
+      config: {
+        name: "savedmodel",
+        base_path: "s3://customerchurn-repo/savedmodel",
+        model_platform: "tensorflow",
+        model_version_policy: {
+          specific: {
+            versions: 1
+          }
+        }
+      }
+    }
 #         volumeMounts:
 #         - mountPath: /var/config/
 #           name: config-volume
@@ -98,7 +128,7 @@ spec:
 #   models.conf: |+
 #     model_config_list: {
 #       config: {
-#         name: "resnet",
+#         name: "savedmodel",
 #         base_path: "s3://customerchurn-repo/savedmodel",
 #         model_platform: "tensorflow",
 #         model_version_policy: {
