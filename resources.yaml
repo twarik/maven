@@ -42,7 +42,7 @@ spec:
         - --rest_api_port=8500
         - --model_name=customerchurn
         - --model_base_path=s3://customerchurn-repo/savedmodel
-        - --monitoring_config_file=/var/config/monitoring_config.txt
+        # - --monitoring_config_file=/var/config/monitoring_config.txt
         command:
         - /usr/bin/tensorflow_model_server
         env:
@@ -82,32 +82,40 @@ spec:
           requests:
             cpu: "1"
             memory: 1Gi
-        volumeMounts:
-        - mountPath: /var/config/
-          name: config-volume
-      volumes:
-      - configMap:
-          name: config-volume #s3-config
-        name: config-volume
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: config-volume
-data:
-  models.conf: |+
-    model_config_list: {
-      config: {
-        name: "savedmodel",
-        base_path: "s3://customerchurn-repo/savedmodel",
-        model_platform: "tensorflow",
-        model_version_policy: {
-          specific: {
-            versions: 1
-          }
-        }
-      }
-    }
+#         volumeMounts:
+#         - mountPath: /var/config/
+#           name: config-volume
+#       volumes:
+#       - configMap:
+#           name: config-volume #s3-config
+#         name: config-volume
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: config-volume
+# data:
+#   models.conf: |+
+#     model_config_list: {
+#       config: {
+#         name: "savedmodel",
+#         base_path: "s3://customerchurn-repo/savedmodel",
+#         model_platform: "tensorflow",
+#         # model_version_policy: {
+#         #   specific: {
+#         #     versions: 1
+#         #   }
+#         # }
+#       }
+#     }
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: config-volume
+#   # namespace: default
+# data:
+#   special.how: very
+#   special.type: charm
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
