@@ -21,8 +21,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: s3
-  name: s3
+    app: customerchurn
+  name: customerchurn-v1
   namespace: kubeflow
 spec:
   selector:
@@ -33,7 +33,7 @@ spec:
       annotations:
         sidecar.istio.io/inject: null
       labels:
-        app: s3
+        app: customerchurn
         version: v1
     spec:
       containers:
