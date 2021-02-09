@@ -70,7 +70,7 @@ spec:
         image: tensorflow/serving:1.11.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
-          initialDelaySeconds: 100 #initialDelaySeconds: 30
+          initialDelaySeconds: 30 #initialDelaySeconds: 30
           periodSeconds: 30
           tcpSocket:
             port: 9000
