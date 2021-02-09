@@ -44,7 +44,7 @@ spec:
         - --model_name=customerchurn
         # - --model_base_path=s3://customerchurn-repo/savedmodel
         - --model_config_file=/serving/models/config/models.conf
-        - --file_system_poll_wait_seconds=2147483647
+        - --file_system_poll_wait_seconds=60 #2147483647
         # - --monitoring_config_file=/var/config/monitoring_config.txt
         command:
         - /usr/bin/tensorflow_model_server
