@@ -114,6 +114,14 @@ data:
         }
       }
     }
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: config-volume
+#   # namespace: default
+# data:
+#   special.how: very
+#   special.type: charm
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
