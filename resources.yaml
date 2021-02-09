@@ -45,7 +45,7 @@ spec:
         - --rest_api_port=8500
         - --model_name=customerchurn
         # - --model_base_path=s3://customerchurn-repo/savedmodel
-        - --model_base_path=gs://mavencode-churn-model/customer-churn/churn01
+        - --model_base_path=s3://customerchurn-repo/savedmodel
         # - --model_config_file=/serving/models/config/models.conf
         # - --file_system_poll_wait_seconds=2147483647
         # - --monitoring_config_file=/var/config/monitoring_config.txt
