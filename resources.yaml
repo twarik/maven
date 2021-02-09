@@ -103,11 +103,11 @@ data:
         name: "savedmodel",
         base_path: "s3://customerchurn-repo/savedmodel",
         model_platform: "tensorflow",
-        # model_version_policy: {
-        #   specific: {
-        #     versions: 1
-        #   }
-        # }
+        model_version_policy: {
+          specific: {
+            versions: 1
+          }
+        }
       }
     }
 # apiVersion: v1
