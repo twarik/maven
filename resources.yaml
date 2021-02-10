@@ -5,6 +5,7 @@ metadata:
     app: customerchurn
   name: customerchurn-service
   # namespace: kubeflow
+  namespace: tfserving
 spec:
   ports:
   - name: grpc-tf-serving
@@ -25,6 +26,7 @@ metadata:
     app: customerchurn
   name: customerchurn-v1
   # namespace: kubeflow
+  namespace: tfserving
 spec:
   selector:
     matchLabels:
@@ -42,31 +44,12 @@ spec:
         - --port=9000
         - --rest_api_port=8500
         - --model_name=customerchurn
-        # - --model_base_path=s3://customerchurn-repo/savedmodel
-        - --model_config_file=/serving/models/config/models.conf
-        - --file_system_poll_wait_seconds=2147483647
+        - --model_base_path=gs://mavencode-churn-model/customer-churn/tfserving
+        # - --model_config_file=/serving/models/config/models.conf
+        # - --file_system_poll_wait_seconds=2147483647
         # - --monitoring_config_file=/var/config/monitoring_config.txt
         command:
         - /usr/bin/tensorflow_model_server
-        env:
-        - name: AWS_ACCESS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              key: AWS_ACCESS_KEY_ID
-              name: secretname
-        - name: AWS_SECRET_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              key: AWS_SECRET_ACCESS_KEY
-              name: secretname
-        - name: AWS_REGION
-          value: us-east-1
-        - name: S3_USE_HTTPS
-          value: "true"
-        - name: S3_VERIFY_SSL
-          value: "true"
-        - name: S3_ENDPOINT
-          value: s3.us-east-1.amazonaws.com
         image: tensorflow/serving:1.11.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -85,32 +68,33 @@ spec:
         #   requests:
         #     cpu: "1"
         #     memory: 1Gi
-        volumeMounts:
-        - mountPath: /serving/models/config #/var/config/
-          name: config-volume
-      volumes:
-      - configMap:
-          name: config-volume #s3-config
-        name: config-volume
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: config-volume
-data:
-  models.conf: |+
-    model_config_list: {
-      config: {
-        name: "savedmodel",
-        base_path: "s3://customerchurn-repo/savedmodel",
-        model_platform: "tensorflow",
-        model_version_policy: {
-          specific: {
-            versions: 1
-          }
-        }
-      }
-    }
+#         volumeMounts:
+#         - mountPath: /serving/models/config #/var/config/
+#           name: config-volume
+#       volumes:
+#       - configMap:
+#           name: config-volume #s3-config
+#         name: config-volume
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: config-volume
+#   namespace: tfserving
+# data:
+#   models.conf: |+
+#     model_config_list: {
+#       config: {
+#         name: "customerchurn",
+#         base_path: "gs://mavencode-churn-model/customer-churn/churn01",
+#         model_platform: "tensorflow",
+#         model_version_policy: {
+#           specific: {
+#             versions: 1
+#           }
+#         }
+#       }
+#     }
 # apiVersion: v1
 # kind: ConfigMap
 # metadata:
@@ -126,6 +110,7 @@ metadata:
   labels:
   name: customerchurn-service
   # namespace: kubeflow
+  namespace: tfserving
 spec:
   host: customerchurn-service
   subsets:
@@ -139,6 +124,7 @@ metadata:
   labels:
   name: customerchurn-service
   # namespace: kubeflow
+  namespace: tfserving
 spec:
   gateways:
   - kubeflow-gateway
