@@ -61,13 +61,13 @@ spec:
         ports:
         - containerPort: 9000
         - containerPort: 8500
-        resources:
-          limits:
-            cpu: "4"
-            memory: 4Gi
-          requests:
-            cpu: "1"
-            memory: 1Gi
+        # resources:
+        #   limits:
+        #     cpu: "4"
+        #     memory: 4Gi
+        #   requests:
+        #     cpu: "1"
+        #     memory: 1Gi
 #         volumeMounts:
 #         - mountPath: /var/config/
 #           name: config-volume
