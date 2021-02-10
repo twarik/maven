@@ -44,10 +44,7 @@ spec:
         - --port=9000
         - --rest_api_port=8500
         - --model_name=customerchurn
-        - --model_base_path=gs://mavencode-churn-model/customer-churn/tfserving
-        # - --model_config_file=/serving/models/config/models.conf
-        # - --file_system_poll_wait_seconds=2147483647
-        # - --monitoring_config_file=/var/config/monitoring_config.txt
+        # - --model_base_path=gs://mavencode-churn-model/customer-churn/tfserving
         command:
         - /usr/bin/tensorflow_model_server
         image: tensorflow/serving:1.11.1
@@ -61,40 +58,40 @@ spec:
         ports:
         - containerPort: 9000
         - containerPort: 8500
-        # resources:
-        #   limits:
-        #     cpu: "4"
-        #     memory: 4Gi
-        #   requests:
-        #     cpu: "1"
-        #     memory: 1Gi
-#         volumeMounts:
-#         - mountPath: /serving/models/config #/var/config/
-#           name: config-volume
-#       volumes:
-#       - configMap:
-#           name: config-volume #s3-config
-#         name: config-volume
-# ---
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: config-volume
-#   namespace: tfserving
-# data:
-#   models.conf: |+
-#     model_config_list: {
-#       config: {
-#         name: "customerchurn",
-#         base_path: "gs://mavencode-churn-model/customer-churn/churn01",
-#         model_platform: "tensorflow",
-#         model_version_policy: {
-#           specific: {
-#             versions: 1
-#           }
-#         }
-#       }
-#     }
+        resources:
+          limits:
+            cpu: "4"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        volumeMounts:
+        - mountPath: /serving/models/config #/var/config/
+          name: config-volume
+      volumes:
+      - configMap:
+          name: config-volume #s3-config
+        name: config-volume
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-volume
+  namespace: tfserving
+data:
+  models.conf: |+
+    model_config_list: {
+      config: {
+        name: "customerchurn",
+        base_path: "gs://mavencode-churn-model/customer-churn/tfserving",
+        model_platform: "tensorflow",
+        model_version_policy: {
+          specific: {
+            versions: 1
+          }
+        }
+      }
+    }
 # apiVersion: v1
 # kind: ConfigMap
 # metadata:
