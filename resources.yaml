@@ -85,11 +85,6 @@ data:
         name: "customerchurn",
         base_path: "gs://mavencode-churn-model/customer-churn/tfserving",
         model_platform: "tensorflow",
-        model_version_policy: {
-          specific: {
-            versions: 1
-          }
-        }
       }
     }
 # apiVersion: v1
