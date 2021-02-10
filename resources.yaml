@@ -4,8 +4,7 @@ metadata:
   labels:
     app: customerchurn
   name: customerchurn-service
-  # namespace: kubeflow
-  #namespace: tfserving
+  namespace: kubeflow
 spec:
   ports:
   - name: grpc-tf-serving
@@ -16,7 +15,6 @@ spec:
     targetPort: 8500
   selector:
     app: customerchurn
-  # type: ClusterIP
   type: LoadBalancer
 ---
 apiVersion: apps/v1
@@ -25,8 +23,7 @@ metadata:
   labels:
     app: customerchurn
   name: customerchurn-v1
-  # namespace: kubeflow
-  #namespace: tfserving
+  namespace: kubeflow
 spec:
   selector:
     matchLabels:
@@ -49,7 +46,6 @@ spec:
         - /usr/bin/tensorflow_model_server
         env:
         - name: GOOGLE_APPLICATION_CREDENTIALS
-          # value: /secret/gcp-credentials/user-gcp-sa.json
           value: /home/demo/user-gcp-sa.json
         image: tensorflow/serving:1.11.1
         imagePullPolicy: IfNotPresent
@@ -64,7 +60,7 @@ spec:
         - containerPort: 8500
         resources:
           limits:
-            cpu: "4" #cpu: "4"
+            cpu: "4"
             memory: 4Gi
           requests:
             cpu: "1"
@@ -81,24 +77,13 @@ spec:
       - name: gcp-credentials
         secret:
           secretName: user-gcp-sa
-# ---
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: customerchurn-v1-config
-#   # namespace: default
-#   #namespace: tfserving
-# data:
-#   special.how: very
-#   special.type: charm
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   labels:
   name: customerchurn-service
-  # namespace: kubeflow
-  #namespace: tfserving
+  namespace: kubeflow
 spec:
   host: customerchurn-service
   subsets:
@@ -111,8 +96,7 @@ kind: VirtualService
 metadata:
   labels:
   name: customerchurn-service
-  # namespace: kubeflow
-  #namespace: tfserving
+  namespace: kubeflow
 spec:
   gateways:
   - kubeflow-gateway
