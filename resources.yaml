@@ -47,9 +47,10 @@ spec:
         - --model_base_path=gs://mavencode-churn-model/customer-churn/tfserving
         command:
         - /usr/bin/tensorflow_model_server
-        # env:
-        # - name: GOOGLE_APPLICATION_CREDENTIALS
-        #   value: /secret/gcp-credentials/user-gcp-sa.json
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          # value: /secret/gcp-credentials/user-gcp-sa.json
+          value: /home/demo/user-gcp-sa.json
         image: tensorflow/serving:1.11.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -61,25 +62,25 @@ spec:
         ports:
         - containerPort: 9000
         - containerPort: 8500
-        # resources:
-        #   limits:
-        #     cpu: "4"
-        #     memory: 4Gi
-        #   requests:
-        #     cpu: "1"
-        #     memory: 1Gi
-#         volumeMounts:
-#         - mountPath: /var/config/
-#           name: config-volume
-#         - mountPath: /secret/gcp-credentials
-#           name: gcp-credentials
-#       volumes:
-#       - configMap:
-#           name: customerchurn-v1-config
-#         name: config-volume
-#       - name: gcp-credentials
-#         secret:
-#           secretName: user-gcp-sa
+        resources:
+          limits:
+            cpu: "4" #cpu: "4"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        volumeMounts:
+        - mountPath: /var/config/
+          name: config-volume
+        - mountPath: /home/demo
+          name: gcp-credentials
+      volumes:
+      - configMap:
+          name: customerchurn-v1-config
+        name: config-volume
+      - name: gcp-credentials
+        secret:
+          secretName: user-gcp-sa
 # ---
 # apiVersion: v1
 # kind: ConfigMap
