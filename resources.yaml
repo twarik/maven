@@ -47,9 +47,9 @@ spec:
         - --model_base_path=gs://mavencode-churn-model/customer-churn/tfserving
         command:
         - /usr/bin/tensorflow_model_server
-        env:
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /secret/gcp-credentials/user-gcp-sa.json
+        # env:
+        # - name: GOOGLE_APPLICATION_CREDENTIALS
+        #   value: /secret/gcp-credentials/user-gcp-sa.json
         image: tensorflow/serving:1.11.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
