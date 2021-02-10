@@ -71,15 +71,15 @@ spec:
         volumeMounts:
         - mountPath: /var/config/
           name: config-volume
-        - mountPath: /secret/gcp-credentials
-          name: gcp-credentials
+        # - mountPath: /secret/gcp-credentials
+        #   name: gcp-credentials
       volumes:
       - configMap:
           name: customerchurn-v1-config
         name: config-volume
-      - name: gcp-credentials
-        secret:
-          secretName: user-gcp-sa
+      # - name: gcp-credentials
+      #   secret:
+      #     secretName: user-gcp-sa
 ---
 apiVersion: v1
 kind: ConfigMap
