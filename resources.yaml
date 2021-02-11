@@ -1,4 +1,13 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: customerchurn-v1-config
+  namespace: tfserving
+data:
+  special.how: very
+  special.type: charm
+---
+apiVersion: v1
 kind: Service
 metadata:
   labels:
@@ -48,7 +57,6 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /home/demo/user-gcp-sa.json
         image: tensorflow/serving:1.11.1
-        # image: tensorflow/serving:1.11.1-gpu
         imagePullPolicy: IfNotPresent
         livenessProbe:
           initialDelaySeconds: 30 #initialDelaySeconds: 30
