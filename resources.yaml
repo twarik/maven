@@ -76,7 +76,9 @@ spec:
         name: config-volume
       - name: gcp-credentials
         secret:
-          secretName: user-gcp-sa
+          # secretName: user-gcp-sa
+          secretName: istio.user-gcp-sa
+
 # ---
 # apiVersion: v1
 # kind: ConfigMap
