@@ -75,7 +75,7 @@ spec:
             cpu: "1"
             memory: 1Gi
         volumeMounts:
-        - mountPath: /var/config/
+        - mountPath: /home/demo/config/
           name: config-volume
         - mountPath: /home/demo
           name: gcp-credentials
