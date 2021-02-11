@@ -47,11 +47,11 @@ spec:
         env:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /home/demo/user-gcp-sa.json
-        # image: tensorflow/serving:1.11.1
-        image: tensorflow/serving:1.11.1-gpu
+        image: tensorflow/serving:1.11.1
+        # image: tensorflow/serving:1.11.1-gpu
         imagePullPolicy: IfNotPresent
         livenessProbe:
-          initialDelaySeconds: 600 #initialDelaySeconds: 30
+          initialDelaySeconds: 30 #initialDelaySeconds: 30
           periodSeconds: 30
           tcpSocket:
             port: 9000
@@ -66,18 +66,18 @@ spec:
           requests:
             cpu: "1"
             memory: 1Gi
-      #   volumeMounts:
-      #   - mountPath: /var/config/
-      #     name: config-volume
-      #   - mountPath: /home/demo
-      #     name: gcp-credentials
-      # volumes:
-      # - configMap:
-      #     name: customerchurn-v1-config
-      #   name: config-volume
-      # - name: gcp-credentials
-      #   secret:
-      #     secretName: user-gcp-sa
+        volumeMounts:
+        - mountPath: /var/config/
+          name: config-volume
+        - mountPath: /home/demo
+          name: gcp-credentials
+      volumes:
+      - configMap:
+          name: customerchurn-v1-config
+        name: config-volume
+      - name: gcp-credentials
+        secret:
+          secretName: user-gcp-sa
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
