@@ -4,7 +4,7 @@ metadata:
   labels:
     app: customerchurn
   name: customerchurn-service
-  namespace: kubeflow
+  namespace: tfserving
 spec:
   ports:
   - name: grpc-tf-serving
@@ -23,7 +23,7 @@ metadata:
   labels:
     app: customerchurn
   name: customerchurn-v1
-  namespace: kubeflow
+  namespace: tfserving
 spec:
   selector:
     matchLabels:
@@ -82,7 +82,7 @@ spec:
 # kind: ConfigMap
 # metadata:
 #   name: customerchurn-v1-config
-#   namespace: kubeflow
+#   namespace: tfserving
 # data:
 #   # special.how: very
 #   # special.type: charm
@@ -92,7 +92,7 @@ kind: DestinationRule
 metadata:
   labels:
   name: customerchurn-service
-  namespace: kubeflow
+  namespace: tfserving
 spec:
   host: customerchurn-service
   subsets:
@@ -105,7 +105,7 @@ kind: VirtualService
 metadata:
   labels:
   name: customerchurn-service
-  namespace: kubeflow
+  namespace: tfserving
 spec:
   gateways:
   - kubeflow-gateway
