@@ -130,7 +130,7 @@ spec:
   http:
   - route:
     - destination:
-        host: tfserving.default.svc.cluster.local
+        host: customerchurn-service.tfserving.svc.cluster.local
         port:
           number: 9000
         subset: v1
@@ -141,7 +141,7 @@ kind: DestinationRule
 metadata:
   name: tfserving
 spec:
-  host: tfserving.default.svc.cluster.local
+  host: customerchurn-service.tfserving.svc.cluster.local
   trafficPolicy:
     loadBalancer:
       simple: ROUND_ROBIN
